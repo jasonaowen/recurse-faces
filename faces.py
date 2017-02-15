@@ -57,13 +57,14 @@ def auth_recurse_redirect():
     if app.debug:
         callback = 'urn:ietf:wg:oauth:2.0:oob'
     else:
-        callback = url_for('auth_recurse_callback')
+        callback = os.environ['CLIENT_CALLBACK']
     return rc.authorize(callback=callback)
 
-@app.route('/auth/recurse/callback', methods=['POST'])
+@app.route('/auth/recurse/callback', methods=['GET', 'POST'])
 def auth_recurse_callback():
     "Process the results of a successful OAuth2 authentication"
     response = rc.authorized_response()
+    print("Response: {}".format(str(response)))
     if response is None or response.get('access_token') is None:
         return ({
             'message': 'Access Denied',
@@ -71,6 +72,6 @@ def auth_recurse_callback():
             'error_description': request.args['error_description'],
         }, 403)
     else:
-        me = rc.get('people/me').data
+        me = rc.get('people/me', token=[response.get('access_token')]).data
         session['recurse_user_id'] = me['id']
         return redirect(url_for('index'))
