@@ -22,7 +22,7 @@ from flask import Flask, redirect, request, session, url_for
 from flask_oauthlib.client import OAuth
 
 # pylint: disable=invalid-name
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__, static_url_path='/build')
 app.debug = not os.environ.get('PRODUCTION', False)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'development')
 
