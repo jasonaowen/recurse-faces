@@ -4,17 +4,16 @@
   "private": true,
   "author": "Jason Owen <jason.a.owen@gmail.com>",
   "license": "GPL-3.0",
-  "devDependencies": {
-    "react-scripts": "0.9.0"
-  },
   "dependencies": {
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-scripts": "0.9.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   }
 }

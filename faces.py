@@ -17,20 +17,19 @@ Recurse Faces back-end
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import os
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, redirect, request, send_from_directory, session, url_for
 from flask_oauthlib.client import OAuth
+
 
 # pylint: disable=invalid-name
 app = Flask(__name__, static_url_path='/build')
 app.debug = not os.environ.get('PRODUCTION', False)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'development')
 
-# class RecurseCenter(Oauth2):
-#     NAME = 'Recurse Center'
-#     AUTHORIZATION_URL = 'https://www.recurse.com/oauth/authorize'
-#     ACCESS_TOKEN_URL = 'https://www.recurse.com/oauth/token'
-#     GET_USERINFO_URL = 'https://www.recurse.com/api/v1/people/me'
+logging.basicConfig(level=logging.INFO)
+
 rc = OAuth(app).remote_app(
     'Recurse Center',
     base_url='https://www.recurse.com/api/v1/',
@@ -44,12 +43,12 @@ rc = OAuth(app).remote_app(
 @app.route('/')
 def index():
     "Get the single-page app HTML"
-    return app.send_static_file('index.html')
+    return send_from_directory('build', 'index.html')
 
-@app.route('/bundle.js')
-def bundle():
-    "Get the single-page app JavaScript"
-    return app.send_static_file('bundle.js')
+@app.route('/static/<path:path>')
+def static_file(path):
+    "Get the single-page app assets"
+    return send_from_directory('build/static', path)
 
 @app.route('/auth/recurse')
 def auth_recurse_redirect():
