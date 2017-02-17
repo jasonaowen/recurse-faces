@@ -17,9 +17,10 @@ Recurse Faces back-end
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from functools import wraps
 import logging
 import os
-from flask import Flask, redirect, request, send_from_directory, session, url_for
+from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_oauthlib.client import OAuth
 
 
@@ -74,3 +75,26 @@ def auth_recurse_callback():
         me = rc.get('people/me', token=[response.get('access_token')]).data
         session['recurse_user_id'] = me['id']
         return redirect(url_for('index'))
+
+def needs_authorization(route):
+    """ Use the @needs_authorization annotaiton to check that a valid session
+    exists for the current user."""
+    @wraps(route)
+    def wrapped_route(*args, **kwargs):
+        """Check the session, or return access denied."""
+        if 'recurse_user_id' in session:
+            return route(*args, **kwargs)
+        else:
+            return (jsonify({
+                'message': 'Access Denied',
+            }), 403)
+
+    return wrapped_route
+
+@app.route('/api/people/random')
+@needs_authorization
+def get_random_person():
+    """Find a random person from the database that is not the current users."""
+    return jsonify({
+        "hello": "world"
+    })
