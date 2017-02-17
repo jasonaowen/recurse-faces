@@ -2,6 +2,11 @@ import { Map, fromJS } from 'immutable';
 
 export const INITIAL_STATE = Map.of(
   'guess', Map.of('status', 'no guess'),
+  'activePerson', Map.of(
+    'id', 0,
+    'first_name', '',
+    'image_url', ''
+  ),
 );
 
 export function guess(state, guess) {

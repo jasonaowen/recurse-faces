@@ -85,7 +85,9 @@ def needs_authorization(route):
     @wraps(route)
     def wrapped_route(*args, **kwargs):
         """Check the session, or return access denied."""
-        if 'recurse_user_id' in session:
+        if app.debug:
+            return route(*args, **kwargs)
+        elif 'recurse_user_id' in session:
             return route(*args, **kwargs)
         else:
             return (jsonify({
@@ -98,6 +100,10 @@ def needs_authorization(route):
 @needs_authorization
 def get_random_person():
     """Find a random person from the database that is not the current users."""
+    if app.debug:
+        current_user = 0
+    else:
+        current_user = session['recurse_user_id']
     cursor = connection.cursor()
     cursor.execute("SELECT person_id," +
                    "       first_name," +
@@ -108,7 +114,7 @@ def get_random_person():
                    "WHERE person_id != %s " +
                    "ORDER BY random() " +
                    "LIMIT 1",
-                   [session['recurse_user_id']])
+                   [current_user])
     random_person = cursor.fetchone()
     cursor.close()
 

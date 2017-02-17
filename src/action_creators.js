@@ -4,3 +4,10 @@ export function guess(guess) {
     guess
   };
 }
+
+export function setActivePerson(person) {
+  return {
+    type: "SET_ACTIVE_PERSON",
+    person
+  };
+}
