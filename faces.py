@@ -22,6 +22,7 @@ import logging
 import os
 from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
 from flask_oauthlib.client import OAuth
+import psycopg2
 
 
 # pylint: disable=invalid-name
@@ -40,6 +41,8 @@ rc = OAuth(app).remote_app(
     consumer_key=os.environ['CLIENT_ID'],
     consumer_secret=os.environ['CLIENT_SECRET'],
 )
+
+connection = psycopg2.connect(os.environ['DATABASE_URL'])
 
 @app.route('/')
 def index():
@@ -95,6 +98,24 @@ def needs_authorization(route):
 @needs_authorization
 def get_random_person():
     """Find a random person from the database that is not the current users."""
+    cursor = connection.cursor()
+    cursor.execute("SELECT person_id," +
+                   "       first_name," +
+                   "       middle_name," +
+                   "       last_name," +
+                   "       image_url " +
+                   "FROM people " +
+                   "WHERE person_id != %s " +
+                   "ORDER BY random() " +
+                   "LIMIT 1",
+                   [session['recurse_user_id']])
+    random_person = cursor.fetchone()
+    cursor.close()
+
     return jsonify({
-        "hello": "world"
+        'person_id': random_person[0],
+        'first_name': random_person[1],
+        'middle_name': random_person[2],
+        'last_name': random_person[3],
+        'image_url': random_person[4],
     })
