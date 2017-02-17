@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { CardContainer } from './components/card';
+import { GuessContainer } from './components/guess';
 
 class App extends Component {
   render() {
@@ -12,6 +13,7 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <CardContainer />
+        <GuessContainer />
       </div>
     );
   }

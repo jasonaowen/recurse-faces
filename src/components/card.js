@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as actionCreators from '../action_creators';
 
 class Card extends Component {
+  handleSubmitClick = (event) => {
+    const guess = this._guess.value;
+    this.props.guess(guess);
+    event.preventDefault();
+  }
+
   render() {
     const person = this.props.person;
     return (
@@ -14,6 +21,10 @@ class Card extends Component {
              width="150"
              alt="Who is this?"
         />
+        <form onSubmit={this.handleSubmitClick}>
+          <input type="text" ref={input => this._guess = input} />
+          <input type="submit" value="Guess!" label="Guess!" />
+        </form>
       </div>
     );
   }
@@ -25,4 +36,4 @@ function mapStateToProps(state) {
   };
 }
 
-export const CardContainer = connect(mapStateToProps)(Card);
+export const CardContainer = connect(mapStateToProps, actionCreators)(Card);
