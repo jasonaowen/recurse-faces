@@ -67,7 +67,6 @@ def auth_recurse_redirect():
 def auth_recurse_callback():
     "Process the results of a successful OAuth2 authentication"
     response = rc.authorized_response()
-    print("Response: {}".format(str(response)))
     if response is None or response.get('access_token') is None:
         return ({
             'message': 'Access Denied',
@@ -76,6 +75,11 @@ def auth_recurse_callback():
         }, 403)
     else:
         me = rc.get('people/me', token=[response.get('access_token')]).data
+        logging.info("Logged in: %s %s %s",
+                     me.get('first_name', ''),
+                     me.get('middle_name', ''),
+                     me.get('last_name', ''))
+
         session['recurse_user_id'] = me['id']
         return redirect(url_for('index'))
 
