@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../action_creators';
-import { getRandomPerson } from '../api';
 
 class Card extends Component {
   handleSubmitClick = (event) => {
     const guess = this._guess.value;
     this.props.guess(guess);
-    event.preventDefault();
-  }
-
-  handleGetNewPersonClick = (event) => {
-    getRandomPerson().then((result) => {
-      this.props.setActivePerson(result);
-    });
     event.preventDefault();
   }
 
@@ -32,9 +24,6 @@ class Card extends Component {
         <form onSubmit={this.handleSubmitClick}>
           <input type="text" ref={input => this._guess = input} />
           <input type="submit" value="Guess!" label="Guess!" />
-        </form>
-        <form onSubmit={this.handleGetNewPersonClick}>
-          <input type="submit" value="Next!" label="Next!" />
         </form>
       </div>
     );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { CardContainer } from './components/card';
 import { GuessContainer } from './components/guess';
+import { NextContainer } from './components/next';
 import * as actionCreators from './action_creators';
 import { getRandomPerson } from './api';
 import { connect } from 'react-redux';
@@ -18,6 +19,7 @@ class App extends Component {
       <div className="App">
         <CardContainer />
         <GuessContainer />
+        <NextContainer />
       </div>
     );
   }
