@@ -69,6 +69,7 @@ $ FLASK_APP=faces.py \
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
   DATABASE_URL=postgres://username:password@hostname:port/database \
+  DEFAULT_USER=<your_recurse_user_id> \
   python -m flask run
 
 $ npm run start

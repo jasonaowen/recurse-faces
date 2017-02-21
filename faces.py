@@ -119,7 +119,9 @@ def get_random_person_from_all_batches(cursor, current_user):
 def get_random_person():
     """Find a random person from the database that meets the selected filter"""
     if app.debug:
-        current_user = request.args.get('user', 0)
+        current_user = request.args.get('user')
+        if current_user is None:
+            current_user = os.environ.get('DEFAULT_USER', 1)
     else:
         current_user = session['recurse_user_id']
     cursor = connection.cursor()
