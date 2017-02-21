@@ -100,26 +100,30 @@ def needs_authorization(route):
 
     return wrapped_route
 
+def get_random_person_from_all_batches(cursor, current_user):
+    """Find a random person from the database that is not the current users."""
+    cursor.execute("""SELECT person_id,
+                             first_name,
+                             middle_name,
+                             last_name,
+                             image_url
+                      FROM people
+                      WHERE person_id != %s
+                      ORDER BY random()
+                      LIMIT 1""",
+                   [current_user])
+    return cursor.fetchone()
+
 @app.route('/api/people/random')
 @needs_authorization
 def get_random_person():
-    """Find a random person from the database that is not the current users."""
+    """Find a random person from the database that meets the selected filter"""
     if app.debug:
         current_user = 0
     else:
         current_user = session['recurse_user_id']
     cursor = connection.cursor()
-    cursor.execute("SELECT person_id," +
-                   "       first_name," +
-                   "       middle_name," +
-                   "       last_name," +
-                   "       image_url " +
-                   "FROM people " +
-                   "WHERE person_id != %s " +
-                   "ORDER BY random() " +
-                   "LIMIT 1",
-                   [current_user])
-    random_person = cursor.fetchone()
+    random_person = get_random_person_from_all_batches(cursor, current_user)
     cursor.close()
 
     return jsonify({
