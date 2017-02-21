@@ -129,6 +129,29 @@ def get_random_overlapping(cursor, current_user):
                    [current_user])
     return cursor.fetchone()
 
+def get_random_in_batch(cursor, current_user):
+    """Find a random person from the database that is in (one of) the current
+    user's batch(es)."""
+    cursor.execute("""WITH user_batch AS (
+                        SELECT batch_id
+                        FROM stints
+                        WHERE person_id = %s
+                      )
+                      SELECT people.person_id,
+                             people.first_name,
+                             people.middle_name,
+                             people.last_name,
+                             people.image_url
+                      FROM people
+                        INNER JOIN stints
+                          ON people.person_id = stints.person_id
+                        INNER JOIN user_batch
+                          ON stints.batch_id = user_batch.batch_id
+                      ORDER BY random()
+                      LIMIT 1""",
+                   [current_user])
+    return cursor.fetchone()
+
 @app.route('/api/people/random')
 @needs_authorization
 def get_random_person():
@@ -145,6 +168,8 @@ def get_random_person():
         random_person = get_random_person_from_all_batches(cursor, current_user)
     elif random_person_filter == 'overlapping':
         random_person = get_random_overlapping(cursor, current_user)
+    elif random_person_filter == 'my_batch':
+        random_person = get_random_in_batch(cursor, current_user)
     else:
         return (jsonify({
             'message': 'Unrecognized filter',
