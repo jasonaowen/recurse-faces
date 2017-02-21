@@ -114,6 +114,21 @@ def get_random_person_from_all_batches(cursor, current_user):
                    [current_user])
     return cursor.fetchone()
 
+def get_random_overlapping(cursor, current_user):
+    """Find a random person from the database that was at RC at the same time as
+    the current user."""
+    cursor.execute("""SELECT person_id,
+                             first_name,
+                             middle_name,
+                             last_name,
+                             image_url
+                      FROM batch_mates
+                      WHERE querent_person_id = %s
+                      ORDER BY random()
+                      LIMIT 1""",
+                   [current_user])
+    return cursor.fetchone()
+
 @app.route('/api/people/random')
 @needs_authorization
 def get_random_person():
@@ -125,7 +140,16 @@ def get_random_person():
     else:
         current_user = session['recurse_user_id']
     cursor = connection.cursor()
-    random_person = get_random_person_from_all_batches(cursor, current_user)
+    random_person_filter = request.args.get('filter')
+    if random_person_filter is None or random_person_filter == 'all':
+        random_person = get_random_person_from_all_batches(cursor, current_user)
+    elif random_person_filter == 'overlapping':
+        random_person = get_random_overlapping(cursor, current_user)
+    else:
+        return (jsonify({
+            'message': 'Unrecognized filter',
+            'filter': random_person_filter,
+        }), 400)
     cursor.close()
 
     return jsonify({

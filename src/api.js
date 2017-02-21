@@ -1,5 +1,5 @@
-export function getRandomPerson() {
-  return fetch('/api/people/random', {
+export function getRandomPerson(filter = 'all') {
+  return fetch('/api/people/random?filter=' + filter, {
     accept: 'application/json',
     credentials: "same-origin",
   }).then((response) => {
