@@ -5,6 +5,7 @@ import * as actionCreators from '../action_creators';
 class Card extends Component {
   handleSubmitClick = (event) => {
     const guess = this._guess.value;
+    this._guess.value = "";
     this.props.guess(guess);
     event.preventDefault();
   }
