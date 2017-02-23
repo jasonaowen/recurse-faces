@@ -5,8 +5,8 @@ import { getRandomPerson } from '../api';
 
 class Next extends Component {
   handleGetNewPersonClick = (event) => {
+    this.props.clearGuess();
     const filter = this._selection.value;
-    console.log(filter);
     getRandomPerson(filter).then((result) => {
       this.props.setActivePerson(result);
     });

@@ -11,3 +11,9 @@ export function setActivePerson(person) {
     person
   };
 }
+
+export function clearGuess() {
+    return {
+    type: "CLEARGUESS",
+  };
+}
