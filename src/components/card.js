@@ -13,7 +13,7 @@ class Card extends Component {
     const person = this.props.person;
     return (
       <div className="card">
-        <div className="person-title" id={person.get('id') + "-title"}>
+        <div className="person-title" id={person.get('person_id') + "-title"}>
           Who is this?
         </div>
         <img src={person.get('image_url')}
