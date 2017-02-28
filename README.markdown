@@ -50,35 +50,57 @@ Then, in theory, it should be a simple `git push heroku master`!
 
 ## Local set up
 
-The app is comprised of a Flask back-end and a React front-end. You'll need to
-install the Python dependencies and the Node dependencies:
+The app is comprised of a Flask back-end and a React front-end.
+
+### Front End
+
+You will need to install dependencies:
+
+```sh
+$ npm install
+```
+
+If you want to do front end development only, you may set the
+`REACT_APP_USE_TEST_DATA` variable:
+
+```sh
+$ REACT_APP_USE_TEST_DATA=true npm run start
+```
+
+If you want to run the front end with the API, set it up as below. The React dev
+server is configured to proxy the Flask API, so you need only start both (in
+separate terminals, probably):
+
+```sh
+$ npm run start
+```
+
+
+### API
+
+You'll need to install the Python dependencies:
 
 ```sh
 $ python3 -m virtualenv --python=python3 venv
 $ . venv/bin/activate
 (venv)$ pip install -r requirements.txt
-
-$ npm install
 ```
 
-The React dev server is configured to proxy the Flask API, so you need only
-start both (in separate terminals, probably):
+Start the Flask API by:
 
 ```sh
-$ FLASK_APP=faces.py \
+(venv)$ FLASK_APP=faces.py \
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
   DATABASE_URL=postgres://username:password@hostname:port/database \
   DEFAULT_USER=<your_recurse_user_id> \
   python -m flask run
-
-$ npm run start
 ```
 
 The `DATABASE_URL` can be any [libpq connection
 string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
 
-## Populating the database
+### Populating the database
 
 First, create the schema:
 
