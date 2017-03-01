@@ -5,6 +5,7 @@ import * as actionCreators from '../action_creators';
 class Card extends Component {
   handleSubmitClick = (event) => {
     const guess = this._guess.value;
+    this._guess.value = "";
     this.props.guess(guess);
     event.preventDefault();
   }
@@ -13,7 +14,7 @@ class Card extends Component {
     const person = this.props.person;
     return (
       <div className="card">
-        <div className="person-title" id={person.get('id') + "-title"}>
+        <div className="person-title" id={person.get('person_id') + "-title"}>
           Who is this?
         </div>
         <img src={person.get('image_url')}

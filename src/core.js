@@ -21,6 +21,10 @@ export function setActivePerson(state, person) {
   return state.set('activePerson', fromJS(person));
 }
 
+export function clearGuest(state) {
+  return state.set('guess', Map.of('status', 'no guess'));
+}
+
 /* things we'll want in the store
  *
  * list of people
