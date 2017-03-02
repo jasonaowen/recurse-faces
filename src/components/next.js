@@ -5,12 +5,12 @@ import { getRandomPerson } from '../api';
 
 class Next extends Component {
   handleGetNewPersonClick = (event) => {
-    this.props.clearGuess();
+    event.preventDefault();
     const filter = this._selection.value;
     getRandomPerson(filter).then((result) => {
       this.props.setActivePerson(result);
     });
-    event.preventDefault();
+    this.props.clearGuess();
   }
 
   render() {
