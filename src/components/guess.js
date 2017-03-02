@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 class Guess extends Component {
   render() {
     const guess = this.props.guess;
-    console.log(this.props);
     if (guess.get('status') === "correct") {
       return (
           <div className="correct guess">
