@@ -5,9 +5,12 @@ class Guess extends Component {
   render() {
     const guess = this.props.guess;
     if (guess.get('status') === "correct") {
+      let person = "REACT_APP_USE_TEST_DATA" in process.env
+      ? this.props.person.getIn(['0'])
+      : this.props.person;
       return (
           <div className="correct guess">
-            Correct! Their Full Name is {this.props.person.get('first_name')} {this.props.person.get('last_name')}
+            Correct! Their Full Name is {person.getIn(['first_name'])} {person.getIn(['last_name'])}
           </div>
       );
     } else if (guess.get('status') === "incorrect") {

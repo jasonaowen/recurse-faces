@@ -10,7 +10,9 @@ export const INITIAL_STATE = Map.of(
 );
 
 export function guess(state, guess) {
-  if (guess === state.getIn(['activePerson', 'first_name'])) {
+  if (guess === ("REACT_APP_USE_TEST_DATA" in process.env
+    ? state.getIn(['activePerson', '0', 'first_name'])
+    : state.getIn(['activePerson', 'first_name']))) {
     return state.set('guess', Map.of('status', 'correct'));
   } else {
     return state.set('guess', Map.of('status', 'incorrect'));
