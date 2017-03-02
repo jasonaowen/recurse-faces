@@ -1,6 +1,7 @@
 import { Map, fromJS } from 'immutable';
 
 export const INITIAL_STATE = Map.of(
+  'hint', Map.of('status', 'no hint'),
   'guess', Map.of('status', 'no guess'),
   'activePerson', Map.of(
     'id', 0,
@@ -25,6 +26,14 @@ export function setActivePerson(state, person) {
 
 export function clearGuess(state) {
   return state.set('guess', Map.of('status', 'no guess'));
+}
+
+export function hint(state) {
+  return state.set('hint', Map.of('status', 'yes please'))
+}
+
+export function clearHint(state) {
+  return state.set('hint', Map.of('status', 'no hint'));
 }
 
 /* things we'll want in the store

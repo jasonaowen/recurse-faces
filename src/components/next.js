@@ -11,6 +11,7 @@ class Next extends Component {
       this.props.setActivePerson(result);
     });
     this.props.clearGuess();
+    this.props.clearHint();
   }
 
   render() {
