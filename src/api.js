@@ -50,7 +50,6 @@ let testPeople = [
 ]
 
 export function getRandomPerson(filter = 'all') {
-  console.log(process.env);
   if ("REACT_APP_USE_TEST_DATA" in process.env) {
     let data = testPeople[Math.ceil(Math.random() * 100) % testPeople.length]
     return new Promise((res, rej) => res(data));
