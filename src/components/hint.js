@@ -6,7 +6,7 @@ class Hint extends Component {
     const hint = this.props.hint;
     let persons = this.props.person.slice();
     if (hint.get('status') === "yes please") {
-      let people = "REACT_APP_USE_TEST_DATA" in process.env
+      let people = process.env.REACT_APP_USE_TEST_DATA === "true"
       ? persons
           .sort(function(a,b) {
             return Math.random()-Math.random();

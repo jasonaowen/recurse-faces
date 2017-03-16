@@ -17,10 +17,10 @@ class Card extends Component {
 
   render() {
     const person = this.props.person;
-    let divID = "REACT_APP_USE_TEST_DATA" in process.env
+    let divID = process.env.REACT_APP_USE_TEST_DATA === "true"
       ? person.getIn(['0','person_id'])
       : person.getIn(['person_id']);
-    let srcImg = "REACT_APP_USE_TEST_DATA" in process.env
+    let srcImg = process.env.REACT_APP_USE_TEST_DATA === "true"
       ? person.getIn(['0','image_url'])
       : person.getIn(['image_url']);
     return (

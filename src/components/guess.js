@@ -5,7 +5,7 @@ class Guess extends Component {
   render() {
     const guess = this.props.guess;
     if (guess.get('status') === "correct") {
-      let person = "REACT_APP_USE_TEST_DATA" in process.env
+      let person = process.env.REACT_APP_USE_TEST_DATA === "true"
       ? this.props.person.getIn(['0'])
       : this.props.person;
       return (

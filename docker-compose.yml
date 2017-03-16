@@ -1,0 +1,58 @@
+version: "2"
+services:
+  node:
+    image: node:6-alpine
+    volumes:
+      - .:/apps/recurse-faces
+    ports:
+      - "3000:3000"
+    networks:
+      - front-tier
+    working_dir: /apps/recurse-faces
+    command: npm run start
+    environment:
+      REACT_APP_USE_TEST_DATA: 'false'
+    depends_on:
+      - db
+      - flask
+  flask:
+    build:
+      context: ./init.d/flask/env
+    image: botwhytho/flask:local
+    volumes:
+      - .:/apps/ENV/recurse-faces
+    networks:
+      - front-tier
+      - back-tier
+    expose:
+      - "12345"
+    ports:
+      - "5000:5000"
+    working_dir: /apps/ENV/recurse-faces
+    user: postgres
+    command: ["./submodules/wait-for-it/wait-for-it-listen.sh", "flask:", ":12345", "--", "./init.d/flask/shell/flask-run.sh"]
+    env_file: ./init.d/flask/env/env.txt
+    environment:
+      FLASK_DEBUG: 1
+      FLASK_SECRET_KEY: development
+      DEFAULT_USER: 2214
+  db:
+    image: postgres:alpine
+    volumes:
+      - sqldata:/var/lib/postgresql/data
+      - ./init.d/db/shell:/docker-entrypoint-initdb.d
+      - ./init.d/db/SQL:/sql-dump
+    networks:
+      - back-tier
+    environment:
+      POSTGRES_DB: faces
+    entrypoint: /bin/sh -c
+    command: ["/usr/local/bin/docker-entrypoint.sh postgres", ";", "nc -z -v flask 12345 -s db -p 12345"]
+volumes:
+  sqldata:
+    driver: local
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge

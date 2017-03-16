@@ -129,3 +129,6 @@ jspm_packages
 # Notes
 notes.txt
 
+# SQL Dump File
+*.sql.gz
+pg_dump*.sql
