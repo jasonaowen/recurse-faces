@@ -132,3 +132,6 @@ notes.txt
 # SQL Dump File
 *.sql.gz
 pg_dump*.sql
+
+# Vim .sqp files
+*.swp

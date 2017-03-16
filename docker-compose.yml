@@ -9,7 +9,8 @@ services:
     networks:
       - front-tier
     working_dir: /apps/recurse-faces
-    command: npm run start
+    entrypoint: /bin/sh -c
+    command: ["npm install && npm run start"]
     environment:
       REACT_APP_USE_TEST_DATA: 'false'
     depends_on:
@@ -17,7 +18,7 @@ services:
       - flask
   flask:
     build:
-      context: ./init.d/flask/env
+      context: ./init.d/flask/docker
     image: botwhytho/flask:local
     volumes:
       - .:/apps/ENV/recurse-faces
@@ -26,12 +27,11 @@ services:
       - back-tier
     expose:
       - "12345"
-    ports:
-      - "5000:5000"
+      - "5000"
     working_dir: /apps/ENV/recurse-faces
     user: postgres
     command: ["./submodules/wait-for-it/wait-for-it-listen.sh", "flask:", ":12345", "--", "./init.d/flask/shell/flask-run.sh"]
-    env_file: ./init.d/flask/env/env.txt
+    env_file: ./init.d/flask/docker/env.txt
     environment:
       FLASK_DEBUG: 1
       FLASK_SECRET_KEY: development

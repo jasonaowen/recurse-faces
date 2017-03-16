@@ -17,18 +17,12 @@ class Card extends Component {
 
   render() {
     const person = this.props.person;
-    let divID = process.env.REACT_APP_USE_TEST_DATA === "true"
-      ? person.getIn(['0','person_id'])
-      : person.getIn(['person_id']);
-    let srcImg = process.env.REACT_APP_USE_TEST_DATA === "true"
-      ? person.getIn(['0','image_url'])
-      : person.getIn(['image_url']);
     return (
       <div className="card">
-        <div className="person-title" id={divID + "-title"}>
+        <div className="person-title" id={person.getIn(['person_id']) + "-title"}>
           Who is this?
         </div>
-        <img src={srcImg}
+        <img src={person.getIn(['0','image_url'])}
              height="150"
              width="150"
              alt="Who is this?"
