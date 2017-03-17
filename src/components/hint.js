@@ -5,12 +5,14 @@ class Hint extends Component {
   render() {
     const hint = this.props.hint;
     if (hint.get('status') === "yes please") {
-      let people = this.props.person.map(function(element){
+      let people = this.props.person.slice().sort(function(a,b) {
+        return Math.random() - Math.random();
+      }).map(function(element){
         return element.get('first_name');
-      }).join(', ')
+      }).join(', ');
       return (
           <div className="hint please">
-            It is one of the following names {people}
+            It is one of the following names <br/> {people}
           </div>
       );
     } else {
