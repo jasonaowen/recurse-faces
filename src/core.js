@@ -11,7 +11,7 @@ export const INITIAL_STATE = Map.of(
 );
 
 export function guess(state, guess) {
-  if (guess === state.getIn(['activePerson', '0', 'first_name'])) {
+  if (guess.toLowerCase() === state.getIn(['activePerson', '0', 'first_name']).toLowerCase()) {
     return state.set('guess', Map.of('status', 'correct'));
   } else {
     return state.set('guess', Map.of('status', 'incorrect'));
