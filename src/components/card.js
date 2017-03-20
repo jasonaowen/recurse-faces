@@ -29,7 +29,7 @@ class Card extends Component {
     const person = this.props.person;
     return (
       <div className="card">
-        <div className="person-title" id={person.getIn(['person_id']) + "-title"}>
+        <div className="person-title" id={person.getIn(['0', 'person_id']) + "-title"}>
           Who is this?
         </div>
         <img src={person.getIn(['0','image_url'])}
