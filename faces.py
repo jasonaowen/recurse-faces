@@ -147,9 +147,10 @@ def get_random_in_batch(cursor, current_user):
                           ON people.person_id = stints.person_id
                         INNER JOIN user_batch
                           ON stints.batch_id = user_batch.batch_id
+                      WHERE people.person_id != %s
                       ORDER BY random()
                       LIMIT 4""",
-                   [current_user])
+                   [current_user,current_user])
     return [x for x in cursor.fetchall()]
 
 @app.route('/api/people/random')
