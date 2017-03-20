@@ -3,11 +3,16 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../action_creators';
 
 class Card extends Component {
+  componentDidUpdate() {
+    this._guess.focus();
+  }
+
   handleSubmitClick = (event) => {
     event.preventDefault();
     const guess = this._guess.value;
     this._guess.value = "";
     this.props.guess(guess);
+    this._guess.focus();
   }
 
   handleHintClick = (event) => {
@@ -27,11 +32,11 @@ class Card extends Component {
              width="150"
              alt="Who is this?"
         />
-        <form class="guess" onSubmit={this.handleSubmitClick}>
+        <form className="guess" onSubmit={this.handleSubmitClick}>
           <input type="text" ref={input => this._guess = input} />
           <input type="submit" value="Guess!" label="Guess!" />
         </form>
-        <form class="hint" onSubmit={this.handleHintClick}>
+        <form className="hint" onSubmit={this.handleHintClick}>
           <input type="submit" value="Hints!" label="Hints!" />
         </form>
       </div>
