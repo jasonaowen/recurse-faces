@@ -22,7 +22,7 @@ class Next extends Component {
           <option value="overlapping">At RC with me</option>
           <option value="my_batch">My batch</option>
         </select>
-        <input type="submit" value="Next!" label="Next!" />
+        <input id="next" type="submit" value="Next!" label="Next!" />
       </form>
     );
   }

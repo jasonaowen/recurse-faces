@@ -4,7 +4,11 @@ import * as actionCreators from '../action_creators';
 
 class Card extends Component {
   componentDidUpdate() {
-    this._guess.focus();
+    if (this.props.guessStatus.getIn(['status']) === "correct") {
+      document.getElementById('next').focus();
+    } else {
+      this._guess.focus();
+    }
   }
 
   handleSubmitClick = (event) => {
@@ -12,7 +16,6 @@ class Card extends Component {
     const guess = this._guess.value;
     this._guess.value = "";
     this.props.guess(guess);
-    this._guess.focus();
   }
 
   handleHintClick = (event) => {
@@ -47,7 +50,8 @@ class Card extends Component {
 function mapStateToProps(state) {
   return {
     person: state.get('activePerson'),
-    hint: state.get('hint')
+    hint: state.get('hint'),
+    guessStatus: state.get('guess')
   };
 }
 
