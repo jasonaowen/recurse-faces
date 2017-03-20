@@ -20,7 +20,9 @@ class Card extends Component {
 
   handleHintClick = (event) => {
     event.preventDefault();
-    this.props.hint();
+    if (this.props.hintStatus.getIn(['status']) === "no hint") {
+      this.props.hint();
+    }
   }
 
   render() {
@@ -50,7 +52,7 @@ class Card extends Component {
 function mapStateToProps(state) {
   return {
     person: state.get('activePerson'),
-    hint: state.get('hint'),
+    hintStatus: state.get('hint'),
     guessStatus: state.get('guess')
   };
 }
