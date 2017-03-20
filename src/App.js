@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { CardContainer } from './components/card';
+import { HintContainer } from './components/hint';
 import { GuessContainer } from './components/guess';
 import { NextContainer } from './components/next';
 import * as actionCreators from './action_creators';
@@ -18,6 +19,7 @@ class App extends Component {
     return (
       <div className="App">
         <CardContainer />
+        <HintContainer />
         <GuessContainer />
         <NextContainer />
       </div>

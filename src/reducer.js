@@ -1,4 +1,4 @@
-import { INITIAL_STATE, guess, setActivePerson, clearGuess } from './core';
+import { INITIAL_STATE, guess, setActivePerson, clearGuess, hint, clearHint } from './core';
 
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -8,6 +8,10 @@ export default function reducer(state = INITIAL_STATE, action) {
     return guess(state, action.guess);
   case 'CLEARGUESS':
     return clearGuess(state);
+  case 'HINT':
+    return hint(state);
+  case 'CLEARHINT':
+    return clearHint(state);
   default:
     return state;
   }

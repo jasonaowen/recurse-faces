@@ -50,8 +50,8 @@ let testPeople = [
 ]
 
 export function getRandomPerson(filter = 'all') {
-  if ("REACT_APP_USE_TEST_DATA" in process.env) {
-    let data = testPeople[Math.ceil(Math.random() * 100) % testPeople.length]
+  if ( process.env.REACT_APP_USE_TEST_DATA === "true") {
+    let data = testPeople.slice().sort(function(a,b) {return Math.random()-Math.random();}).slice(0,4);
     return new Promise((res, rej) => res(data));
   } else {
     return fetch('/api/people/random?filter=' + filter, {

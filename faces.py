@@ -110,9 +110,9 @@ def get_random_person_from_all_batches(cursor, current_user):
                       FROM people
                       WHERE person_id != %s
                       ORDER BY random()
-                      LIMIT 1""",
+                      LIMIT 4""",
                    [current_user])
-    return cursor.fetchone()
+    return [x for x in cursor.fetchall()]
 
 def get_random_overlapping(cursor, current_user):
     """Find a random person from the database that was at RC at the same time as
@@ -125,9 +125,9 @@ def get_random_overlapping(cursor, current_user):
                       FROM batch_mates
                       WHERE querent_person_id = %s
                       ORDER BY random()
-                      LIMIT 1""",
+                      LIMIT 4""",
                    [current_user])
-    return cursor.fetchone()
+    return [x for x in cursor.fetchall()]
 
 def get_random_in_batch(cursor, current_user):
     """Find a random person from the database that is in (one of) the current
@@ -148,9 +148,9 @@ def get_random_in_batch(cursor, current_user):
                         INNER JOIN user_batch
                           ON stints.batch_id = user_batch.batch_id
                       ORDER BY random()
-                      LIMIT 1""",
+                      LIMIT 4""",
                    [current_user])
-    return cursor.fetchone()
+    return [x for x in cursor.fetchall()]
 
 @app.route('/api/people/random')
 @needs_authorization
@@ -177,10 +177,12 @@ def get_random_person():
         }), 400)
     cursor.close()
 
-    return jsonify({
-        'person_id': random_person[0],
-        'first_name': random_person[1],
-        'middle_name': random_person[2],
-        'last_name': random_person[3],
-        'image_url': random_person[4],
-    })
+    return jsonify(
+        [{
+        'person_id': x[0],
+        'first_name': x[1],
+        'middle_name': x[2],
+        'last_name': x[3],
+        'image_url': x[4],
+        } for x in random_person]
+    )

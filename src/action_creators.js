@@ -17,3 +17,16 @@ export function clearGuess() {
     type: "CLEARGUESS",
   };
 }
+
+export function hint() {
+    return {
+    type: "HINT",
+    hint
+  };
+}
+
+export function clearHint() {
+    return {
+    type: "CLEARHINT",
+  };
+}
