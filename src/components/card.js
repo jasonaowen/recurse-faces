@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../action_creators';
+import { Button } from 'react-bootstrap';
 
 class Card extends Component {
   componentDidUpdate() {
@@ -39,10 +40,12 @@ class Card extends Component {
         />
         <form className="guess" onSubmit={this.handleSubmitClick}>
           <input type="text" ref={input => this._guess = input} />
-          <input type="submit" value="Guess!" label="Guess!" />
+          <Button bsStyle="success" type="submit" value="Guess!">Guess!</Button>
+          {/**<input type="submit" value="Guess!" label="Guess!" />**/}
         </form>
         <form className="hint" onSubmit={this.handleHintClick}>
-          <input type="submit" value="Hints!" label="Hints!" />
+          <Button bsStyle="success" type="submit" value="Hints!">Hints!</Button>
+          {/**<input type="submit" value="Hints!" label="Hints!" /> **/}
         </form>
       </div>
     );
