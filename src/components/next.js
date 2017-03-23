@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../action_creators';
 import { getRandomPerson } from '../api';
+import { Button } from 'react-bootstrap'
 
 class Next extends Component {
   handleGetNewPersonClick = (event) => {
@@ -17,12 +18,12 @@ class Next extends Component {
   render() {
     return (
       <form onSubmit={this.handleGetNewPersonClick}>
-        <select name="filter" ref={input => this._selection = input}>
+        <select id="filter" name="filter" ref={input => this._selection = input}>
           <option value="all">Everyone</option>
           <option value="overlapping">At RC with me</option>
           <option value="my_batch">My batch</option>
         </select>
-        <input id="next" type="submit" value="Next!" label="Next!" />
+        <Button id="next" bsStyle="success" type="submit" value="Next!">Next!</Button>
       </form>
     );
   }
