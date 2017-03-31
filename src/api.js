@@ -49,10 +49,19 @@ let testPeople = [
   }
 ]
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export function getRandomPerson(filter = 'all') {
-  if ( process.env.REACT_APP_USE_TEST_DATA === "true") {
-    let data = testPeople.slice().sort(function(a,b) {return Math.random()-Math.random();}).slice(0,4);
-    return new Promise((res, rej) => res(data));
+  if (process.env.REACT_APP_USE_TEST_DATA === 'true') {
+    let data = testPeople.slice().sort(function(a, b) {
+      return Math.random() - Math.random();
+    }).slice(0, 4);
+    return new Promise(async function (res, rej) {
+      await sleep(1000);
+      res(data)
+    });
   } else {
     return fetch('/api/people/random?filter=' + filter, {
       accept: 'application/json',
