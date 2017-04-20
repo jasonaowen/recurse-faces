@@ -3,6 +3,7 @@ import { Map, fromJS } from 'immutable';
 export const INITIAL_STATE = Map.of(
   'hint', Map.of('status', 'no hint'),
   'guess', Map.of('status', 'no guess'),
+  'loading', false,
   'activePerson', Map.of(
     'id', 0,
     'first_name', '',
@@ -32,6 +33,14 @@ export function hint(state) {
 
 export function clearHint(state) {
   return state.set('hint', Map.of('status', 'no hint'));
+}
+
+export function startLoading(state) {
+  return state.set('loading', true);
+}
+
+export function endLoading(state) {
+  return state.set('loading', false);
 }
 
 /* things we'll want in the store
