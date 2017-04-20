@@ -1,4 +1,5 @@
 import { Map, fromJS } from 'immutable';
+import { string_compare } from './string_compare'
 
 export const INITIAL_STATE = Map.of(
   'hint', Map.of('status', 'no hint'),
@@ -12,7 +13,7 @@ export const INITIAL_STATE = Map.of(
 );
 
 export function guess(state, guess) {
-  if (guess.toLowerCase() === state.getIn(['activePerson', '0', 'first_name']).toLowerCase()) {
+  if (string_compare(guess, state.getIn(['activePerson', '0', 'first_name']))) {
     return state.set('guess', Map.of('status', 'correct'));
   } else {
     return state.set('guess', Map.of('status', 'incorrect'));
