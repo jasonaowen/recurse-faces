@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import { CardContainer } from './components/card';
 import { HintContainer } from './components/hint';
 import { GuessContainer } from './components/guess';

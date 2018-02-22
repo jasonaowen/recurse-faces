@@ -5,6 +5,7 @@
   "author": "Jason Owen <jason.a.owen@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "immutable": "^3.8.1",
     "jdu": "^1.0.0",
     "react": "^15.4.2",
