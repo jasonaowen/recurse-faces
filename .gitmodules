@@ -1,3 +1,0 @@
-[submodule "submodules/wait-for-it"]
-	path = submodules/wait-for-it
-	url = https://github.com/botwhytho/wait-for-it.git
