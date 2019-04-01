@@ -31,7 +31,7 @@ $ heroku config:set \
     CLIENT_ID=<your_client_id> \
     CLIENT_SECRET=<your_client_secret> \
     FLASK_SECRET_KEY=$(makepasswd --chars=64) \
-    PRODUCTION=True
+    FLASK_ENV=production
 ```
 
 You will also need to create a database:
@@ -90,12 +90,20 @@ Start the Flask API by:
 
 ```sh
 (venv)$ FLASK_APP=faces.py \
+  FLASK_ENV=development \
+  CLIENT_CALLBACK=http://127.0.0.1:3000/auth/recurse/callback
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
   DATABASE_URL=postgres://username:password@hostname:port/database \
   DEFAULT_USER=<your_recurse_user_id> \
   python -m flask run
 ```
+
+Note that you only need to put real values in
+`CLIENT_CALLBACK`, `CLIENT_ID`, and `CLIENT_SECRET`
+if you intend to test the RC OAuth integration.
+Otherwise, these can be set to placeholder values like `_`
+(but must still be present and nonempty).
 
 The `DATABASE_URL` can be any [libpq connection
 string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).

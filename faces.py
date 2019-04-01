@@ -27,7 +27,6 @@ import psycopg2
 
 # pylint: disable=invalid-name
 app = Flask(__name__, static_url_path='/build')
-app.debug = not os.environ.get('PRODUCTION', False)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'development')
 
 logging.basicConfig(level=logging.INFO)
@@ -57,10 +56,7 @@ def static_file(path):
 @app.route('/auth/recurse')
 def auth_recurse_redirect():
     "Redirect to the Recurse Center OAuth2 endpoint"
-    if app.debug:
-        callback = 'urn:ietf:wg:oauth:2.0:oob'
-    else:
-        callback = os.environ['CLIENT_CALLBACK']
+    callback = os.environ['CLIENT_CALLBACK']
     return rc.authorize(callback=callback)
 
 @app.route('/auth/recurse/callback', methods=['GET', 'POST'])
