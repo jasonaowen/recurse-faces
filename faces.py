@@ -87,7 +87,7 @@ def auth_recurse_callback():
     return redirect(url_for('index'))
 
 def needs_authorization(route):
-    """ Use the @needs_authorization annotaiton to check that a valid session
+    """ Use the @needs_authorization annotation to check that a valid session
     exists for the current user."""
     @wraps(route)
     def wrapped_route(*args, **kwargs):
