@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import logging
 import psycopg2
 
 def parse_args():
@@ -16,7 +17,7 @@ def insert_batches(cursor, batches_filename):
         batches = json.loads(batches_file.read())
 
     for batch in batches:
-        print("Batch {}, \"{}\", {} - {}".format(
+        logging.info("Batch {}, \"{}\", {} - {}".format(
             batch.get('id'),
             batch.get('name'),
             batch.get('start_date'),
@@ -32,12 +33,29 @@ def insert_batches(cursor, batches_filename):
                        ]
                       )
 
+def get_people(token):
+    people = []
+
+    headers = {'Authorization': f'Bearer {token}'}
+    url = 'https://www.recurse.com/api/v1/profiles?limit={limit}&offset={offset}'
+    limit = 50
+    offset = 0
+
+    while True:
+        r = requests.get(url.format(limit, offset), headers=headers).json()
+        if r == []:
+            break
+        people.extend(r)
+        offset += limit
+
+    return people
+
 def insert_people(cursor, people_filename):
     with open(people_filename) as people_file:
         people = json.loads(people_file.read())
 
     for person in people:
-        print("Person #{}: {} {} {}; {}".format(
+        logging.info("Person #{}: {} {} {}; {}".format(
             person.get('id'),
             person.get('first_name'),
             person.get('middle_name'),
@@ -56,7 +74,7 @@ def insert_people(cursor, people_filename):
                        ]
                       )
         for stint in person['stints']:
-            print("  Stint: {}, batch {}, {} - {}".format(
+            logging.info("  Stint: {}, batch {}, {} - {}".format(
                 stint.get('type'),
                 stint.get('batch_id'),
                 stint.get('start_date'),
@@ -88,4 +106,5 @@ def main():
     connection.close()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
