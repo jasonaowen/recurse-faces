@@ -1,23 +1,74 @@
 #!/usr/bin/env python
 
+'''
+Fetch and insert Recurse Center API data into database.
+
+This script fetches the list of batches and the list of profiles from the
+Recurse Center API using the personal access token specified in the environment
+variable RC_API_ACCESS_TOKEN.
+
+It connects to the database specified in the environment variable DATABASE_URL,
+opens a transaction, deletes the current data (if any), and inserts the new
+data. The database schema must already exist.
+'''
+
 import argparse
 import json
 import logging
 import psycopg2
+import requests
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Insert Recurse Center API data into database')
-    parser.add_argument('connection', help='PostgreSQL connection string')
-    parser.add_argument('batches', help='Path to batches.json')
-    parser.add_argument('people', nargs='+', help='Path(s) to batch_people.json')
-    return parser.parse_args()
+def fetch_data(token):
+    return (get_batches(token), get_people(token))
 
-def insert_batches(cursor, batches_filename):
-    with open(batches_filename) as batches_file:
-        batches = json.loads(batches_file.read())
+def get_batches(token):
+    url = 'https://www.recurse.com/api/v1/batches'
+    headers = {'Authorization': f'Bearer {token}'}
+    r = requests.get(url, headers=headers)
+    if r.status_code != requests.codes.ok:
+        r.raise_for_status()
+    return r.json()
 
+def get_people(token):
+    people = []
+
+    headers = {'Authorization': f'Bearer {token}'}
+    url = 'https://www.recurse.com/api/v1/profiles?limit={limit}&offset={offset}'
+    limit = 50
+    offset = 0
+
+    while True:
+        r = requests.get(url.format(limit=limit, offset=offset), headers=headers)
+        if r.status_code != requests.codes.ok:
+            r.raise_for_status()
+        page = r.json()
+        if page == []:
+            break
+        people.extend(page)
+        offset += limit
+
+    return people
+
+def replace_data(database_url, batches, people):
+    connection = psycopg2.connect(database_url)
+    cursor = connection.cursor()
+
+    delete_data(cursor)
+    insert_batches(cursor, batches)
+    insert_people(cursor, people)
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def delete_data(cursor):
+    cursor.execute('DELETE FROM stints')
+    cursor.execute('DELETE FROM people')
+    cursor.execute('DELETE FROM batches')
+
+def insert_batches(cursor, batches):
     for batch in batches:
-        logging.info("Batch {}, \"{}\", {} - {}".format(
+        logging.debug("Batch {}, \"{}\", {} - {}".format(
             batch.get('id'),
             batch.get('name'),
             batch.get('start_date'),
@@ -33,29 +84,9 @@ def insert_batches(cursor, batches_filename):
                        ]
                       )
 
-def get_people(token):
-    people = []
-
-    headers = {'Authorization': f'Bearer {token}'}
-    url = 'https://www.recurse.com/api/v1/profiles?limit={limit}&offset={offset}'
-    limit = 50
-    offset = 0
-
-    while True:
-        r = requests.get(url.format(limit, offset), headers=headers).json()
-        if r == []:
-            break
-        people.extend(r)
-        offset += limit
-
-    return people
-
-def insert_people(cursor, people_filename):
-    with open(people_filename) as people_file:
-        people = json.loads(people_file.read())
-
+def insert_people(cursor, people):
     for person in people:
-        logging.info("Person #{}: {} {} {}; {}".format(
+        logging.debug("Person #{}: {} {} {}; {}".format(
             person.get('id'),
             person.get('first_name'),
             person.get('middle_name'),
@@ -70,11 +101,11 @@ def insert_people(cursor, people_filename):
                         person.get('first_name'),
                         person.get('middle_name'),
                         person.get('last_name'),
-                        person.get('image')
+                        person.get('image_path')
                        ]
                       )
         for stint in person['stints']:
-            logging.info("  Stint: {}, batch {}, {} - {}".format(
+            logging.debug("  Stint: {}, batch {}, {} - {}".format(
                 stint.get('type'),
                 stint.get('batch_id'),
                 stint.get('start_date'),
@@ -92,19 +123,18 @@ def insert_people(cursor, people_filename):
                            ]
                           )
 
-def main():
-    args = parse_args()
-    connection = psycopg2.connect(args.connection)
-    cursor = connection.cursor()
+def main(database_url, token):
+    batches, people = fetch_data(token)
+    logging.info('Found %s people', len(people))
 
-    insert_batches(cursor, args.batches)
-    for people_filename in args.people:
-        insert_people(cursor, people_filename)
-
-    connection.commit()
-    cursor.close()
-    connection.close()
+    replace_data(database_url, batches, people)
 
 if __name__ == "__main__":
+    import os
+
     logging.basicConfig(level=logging.INFO)
-    main()
+
+    database_url = os.environ['DATABASE_URL']
+    token = os.environ['RC_API_ACCESS_TOKEN']
+
+    main(database_url, token)

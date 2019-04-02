@@ -128,14 +128,18 @@ or
 $ psql < schema.sql
 ```
 
-Then, download the relevant data from the Recurse Center API, and invoke the
-update script:
+There is a script
+to get the data the application needs
+from the Recurse Center API
+and store it in the database.
+To connect to the Recurse Center API,
+the script needs a personal access token.
+Run the script:
 
 ```sh
-(venv)$ python update-data.py \
-  <your_database_url> \
-  batches.json \
-  batch-*.json
+(venv)$ DATABASE_URL=postgres://username:password@hostname:port/database \
+  RC_API_ACCESS_TOKEN=<personal access token>
+  ./update-data.py
 ```
 
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11325206/336ea5f4-9150-11e5-9e90-d86ad31993d8.png' height='20px'/></a>
