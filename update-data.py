@@ -74,7 +74,7 @@ def insert_people(cursor, people_filename):
                            ]
                           )
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
     connection = psycopg2.connect(args.connection)
     cursor = connection.cursor()
@@ -86,3 +86,6 @@ if __name__ == "__main__":
     connection.commit()
     cursor.close()
     connection.close()
+
+if __name__ == "__main__":
+    main()
