@@ -21,7 +21,8 @@ from functools import wraps
 import logging
 import os
 from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
-from flask_oauthlib.client import OAuth
+from authlib.flask.client import OAuth
+from werkzeug.exceptions import HTTPException
 import psycopg2
 
 
@@ -31,14 +32,13 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'development')
 
 logging.basicConfig(level=logging.INFO)
 
-rc = OAuth(app).remote_app(
+rc = OAuth(app).register(
     'Recurse Center',
-    base_url='https://www.recurse.com/api/v1/',
+    api_base_url='https://www.recurse.com/api/v1/',
     authorize_url='https://www.recurse.com/oauth/authorize',
     access_token_url='https://www.recurse.com/oauth/token',
-    access_token_method='POST',
-    consumer_key=os.environ['CLIENT_ID'],
-    consumer_secret=os.environ['CLIENT_SECRET'],
+    client_id=os.environ['CLIENT_ID'],
+    client_secret=os.environ['CLIENT_SECRET'],
 )
 
 connection = psycopg2.connect(os.environ['DATABASE_URL'])
@@ -57,27 +57,34 @@ def static_file(path):
 def auth_recurse_redirect():
     "Redirect to the Recurse Center OAuth2 endpoint"
     callback = os.environ['CLIENT_CALLBACK']
-    return rc.authorize(callback=callback)
+    return rc.authorize_redirect(callback)
 
 @app.route('/auth/recurse/callback', methods=['GET', 'POST'])
 def auth_recurse_callback():
     "Process the results of a successful OAuth2 authentication"
-    response = rc.authorized_response()
-    if response is None or response.get('access_token') is None:
-        return ({
-            'message': 'Access Denied',
-            'error': request.args['error'],
-            'error_description': request.args['error_description'],
-        }, 403)
-    else:
-        me = rc.get('people/me', token=[response.get('access_token')]).data
-        logging.info("Logged in: %s %s %s",
-                     me.get('first_name', ''),
-                     me.get('middle_name', ''),
-                     me.get('last_name', ''))
 
-        session['recurse_user_id'] = me['id']
-        return redirect(url_for('index'))
+    try:
+        token = rc.authorize_access_token()
+    except HTTPException as e:
+        logging.error(
+            'Error %s parsing OAuth2 response: %s',
+            request.args.get('error', '(no error code)'),
+            request.args.get('error_description', '(no error description'),
+        )
+        return (jsonify({
+            'message': 'Access Denied',
+            'error': request.args.get('error', '(no error code)'),
+            'error_description': request.args.get('error_description', '(no error description'),
+        }), 403)
+
+    me = rc.get('people/me', token=token).json()
+    logging.info("Logged in: %s %s %s",
+                 me.get('first_name', ''),
+                 me.get('middle_name', ''),
+                 me.get('last_name', ''))
+
+    session['recurse_user_id'] = me['id']
+    return redirect(url_for('index'))
 
 def needs_authorization(route):
     """ Use the @needs_authorization annotaiton to check that a valid session

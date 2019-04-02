@@ -91,7 +91,7 @@ Start the Flask API by:
 ```sh
 (venv)$ FLASK_APP=faces.py \
   FLASK_ENV=development \
-  CLIENT_CALLBACK=http://127.0.0.1:3000/auth/recurse/callback
+  CLIENT_CALLBACK=http://127.0.0.1:5000/auth/recurse/callback
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
   DATABASE_URL=postgres://username:password@hostname:port/database \
@@ -102,7 +102,13 @@ Start the Flask API by:
 Note that you only need to put real values in
 `CLIENT_CALLBACK`, `CLIENT_ID`, and `CLIENT_SECRET`
 if you intend to test the RC OAuth integration.
-Otherwise, these can be set to placeholder values like `_`
+The `CLIENT_CALLBACK` URL must include
+the port number the Flask instance is running on,
+which defaults to port 5000.
+
+The app defaults to allowing access in debug mode,
+so if you are not working on RC OAuth integration,
+the `CLIENT_` variables can be set to placeholder values like `_`
 (but must still be present and nonempty).
 
 The `DATABASE_URL` can be any [libpq connection
