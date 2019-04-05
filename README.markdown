@@ -123,6 +123,27 @@ $ . venv/bin/activate
 (venv)$ pip install -r requirements.txt
 ```
 
+The Flask app needs some configuration,
+which it takes through environment variables.
+
+When running in development mode,
+the app does not require authentication,
+so it needs to know your Recurse Center user ID.
+You can find your ID by going to the
+[directory](https://www.recurse.com/directory),
+looking yourself up,
+and examining the number in the URL;
+for example, `2092` in
+`https://www.recurse.com/directory/2092-jason-owen`.
+
+If you are working on the RC OAuth integration,
+you will need to
+[create an OAuth app in your RC Settings](https://www.recurse.com/settings/apps).
+Put the generated client ID and the client secret
+into the respective placeholders below.
+Otherwise, those can be set to placeholder values like `_`
+(but must still be present and nonempty).
+
 Start the Flask API by:
 
 ```sh
@@ -136,17 +157,9 @@ Start the Flask API by:
   python -m flask run
 ```
 
-Note that you only need to put real values in
-`CLIENT_CALLBACK`, `CLIENT_ID`, and `CLIENT_SECRET`
-if you intend to test the RC OAuth integration.
 The `CLIENT_CALLBACK` URL must include
 the port number the Flask instance is running on,
 which defaults to port 5000.
-
-The app defaults to allowing access in debug mode,
-so if you are not working on RC OAuth integration,
-the `CLIENT_` variables can be set to placeholder values like `_`
-(but must still be present and nonempty).
 
 ## Heroku set up
 
