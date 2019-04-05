@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "author": "Jason Owen <jason.a.owen@gmail.com>",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "immutable": "^3.8.1",
