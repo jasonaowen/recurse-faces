@@ -92,11 +92,19 @@ $ psql < schema.sql
 
 There is a script
 to get the data the application needs
-from the Recurse Center API
+from the
+[Recurse Center API](https://github.com/recursecenter/wiki/wiki/Recurse-Center-API)
 and store it in the database.
-To connect to the Recurse Center API,
-the script needs a personal access token.
-Run the script:
+To connect to the
+Recurse Center API,
+the script needs a personal access token,
+which you can create in the
+[Apps page in your RC Settings](https://www.recurse.com/settings/apps).
+The personal access token will only be shown once,
+so copy it to a safe place.
+
+Run the script with your personal access token:
+
 
 ```sh
 (venv)$ DATABASE_URL=postgres://username:password@hostname:port/database \
