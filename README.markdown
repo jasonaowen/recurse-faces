@@ -32,10 +32,24 @@ $ npm run start
 
 ### API
 
-You'll need to install the Python dependencies:
+You'll need to install the Python dependencies.
+First, set up a
+[virtual environment](https://docs.python.org/3/tutorial/venv.html):
+
+```sh
+$ python3 -m venv venv
+```
+
+or
 
 ```sh
 $ python3 -m virtualenv --python=python3 venv
+```
+
+Then, activate the virtual environment
+and install the app's dependencies into it:
+
+```sh
 $ . venv/bin/activate
 (venv)$ pip install -r requirements.txt
 ```
