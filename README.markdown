@@ -91,7 +91,7 @@ Start the Flask API by:
 ```sh
 (venv)$ FLASK_APP=faces.py \
   FLASK_ENV=development \
-  CLIENT_CALLBACK=http://127.0.0.1:5000/auth/recurse/callback
+  CLIENT_CALLBACK=http://127.0.0.1:5000/auth/recurse/callback \
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
   DATABASE_URL=postgres://username:password@hostname:port/database \
@@ -138,7 +138,7 @@ Run the script:
 
 ```sh
 (venv)$ DATABASE_URL=postgres://username:password@hostname:port/database \
-  RC_API_ACCESS_TOKEN=<personal access token>
+  RC_API_ACCESS_TOKEN=<personal access token> \
   ./update-data.py
 ```
 
