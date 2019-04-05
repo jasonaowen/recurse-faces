@@ -18,7 +18,7 @@
   font-size: 18px;
 }
 
-.hint {
+.hint-result {
   font-size: 20px;
   color: red;
 }
@@ -35,4 +35,24 @@
 
 #filter option {
   background-color: #5cb85c;
+}
+
+
+/* Styling for blurring the text box surrounding the guesses and hints */
+form.hint {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.guess-result > p,
+.hint-result > p {
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.8); /* Black w/opacity/see-through */
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  display: inline-block;
+  width: 40%;
+  min-width: 350px;
+  padding: 20px;
+  text-align: center;
 }
