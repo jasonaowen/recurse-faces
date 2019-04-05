@@ -30,7 +30,76 @@ $ npm run start
 ```
 
 
-### API
+### Back End
+
+The Python server is a Flask app
+that serves the index page and the JavaScript,
+handles the OAuth login process,
+and looks up names and images in the database.
+
+Running the API locally requires populating the database
+and setting up the Python environment.
+
+#### Database
+
+We use [PostgreSQL](https://www.postgresql.org/) as our database.
+Follow the [installation instructions](https://www.postgresql.org/download/)
+for your platform to set up the database server.
+
+First, choose or [create](https://www.postgresql.org/docs/current/tutorial-createdb.html)
+a database:
+
+```sh
+$ createdb --owner=$(whoami) faces
+```
+
+Depending on your platform,
+you may need to run that command
+as the operating system user which owns the database server:
+
+```sh
+$ sudo -u postgres createdb --owner=$(whoami) faces
+```
+
+Then, create the schema:
+
+```sh
+$ psql faces < schema.sql
+```
+
+There is a script
+to get the data the application needs
+from the
+[Recurse Center API](https://github.com/recursecenter/wiki/wiki/Recurse-Center-API)
+and store it in the database.
+To connect to the
+Recurse Center API,
+the script needs a personal access token,
+which you can create in the
+[Apps page in your RC Settings](https://www.recurse.com/settings/apps).
+The personal access token will only be shown once,
+so copy it to a safe place.
+
+Run the script with your personal access token:
+
+```sh
+(venv)$ DATABASE_URL=postgres:///faces \
+  RC_API_ACCESS_TOKEN=<personal access token> \
+  ./update-data.py
+```
+
+It should print out how many people were added.
+
+Note: the `DATABASE_URL` can be any
+[libpq connection string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
+Alternate database URLs you might try are
+`postgres://localhost/faces`
+or
+`postgres://localhost/`,
+to connect over TCP/IP to the databases named `faces` and your username,
+respectively.
+
+#### Flask app
 
 You'll need to install the Python dependencies.
 First, set up a
@@ -62,7 +131,7 @@ Start the Flask API by:
   CLIENT_CALLBACK=http://127.0.0.1:5000/auth/recurse/callback \
   CLIENT_ID=<your_client_id> \
   CLIENT_SECRET=<your_client_secret> \
-  DATABASE_URL=postgres://username:password@hostname:port/database \
+  DATABASE_URL=postgres:///faces \
   DEFAULT_USER=<your_recurse_user_id> \
   python -m flask run
 ```
@@ -78,39 +147,6 @@ The app defaults to allowing access in debug mode,
 so if you are not working on RC OAuth integration,
 the `CLIENT_` variables can be set to placeholder values like `_`
 (but must still be present and nonempty).
-
-The `DATABASE_URL` can be any [libpq connection
-string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
-
-### Populating the database
-
-First, create the schema:
-
-```sh
-$ psql < schema.sql
-```
-
-There is a script
-to get the data the application needs
-from the
-[Recurse Center API](https://github.com/recursecenter/wiki/wiki/Recurse-Center-API)
-and store it in the database.
-To connect to the
-Recurse Center API,
-the script needs a personal access token,
-which you can create in the
-[Apps page in your RC Settings](https://www.recurse.com/settings/apps).
-The personal access token will only be shown once,
-so copy it to a safe place.
-
-Run the script with your personal access token:
-
-
-```sh
-(venv)$ DATABASE_URL=postgres://username:password@hostname:port/database \
-  RC_API_ACCESS_TOKEN=<personal access token> \
-  ./update-data.py
-```
 
 ## Heroku set up
 
