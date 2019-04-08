@@ -18,21 +18,41 @@
   font-size: 18px;
 }
 
-.hint {
+.hint-result {
+  font-size: 20px;
+  color: lightskyblue;
+}
+
+.incorrect-guess {
   font-size: 20px;
   color: red;
 }
 
-.incorrect-guess {
-  font-size: 16px;
-  color: red;
-}
-
 .correct-guess {
-  font-size: 18px;
+  font-size: 20px;
   color: #5cb85c;
 }
 
 #filter option {
   background-color: #5cb85c;
+}
+
+
+/* Styling for blurring the text box surrounding the guesses and hints */
+form.hint {
+  padding-top: .8em;
+  padding-bottom: .8em;
+}
+
+.guess-result > p,
+.hint-result > p {
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.8); /* Black w/opacity/see-through */
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  display: inline-block;
+  min-width: 18em;
+  width: 40%;
+  padding: 1em;
+  text-align: center;
 }

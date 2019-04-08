@@ -13,8 +13,8 @@ class Hint extends Component {
         return element.get('first_name');
       }).join(', ');
       return (
-          <div className="hint please">
-            It is one of the following names <br/> {people}
+          <div className="hint-result hint please">
+            <p>It is one of the following names: <br/> {people}</p>
           </div>
       );
     } else {
