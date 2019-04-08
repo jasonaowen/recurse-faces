@@ -24,12 +24,12 @@
 }
 
 .incorrect-guess {
-  font-size: 16px;
+  font-size: 20px;
   color: red;
 }
 
 .correct-guess {
-  font-size: 18px;
+  font-size: 20px;
   color: #5cb85c;
 }
 
@@ -40,8 +40,8 @@
 
 /* Styling for blurring the text box surrounding the guesses and hints */
 form.hint {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: .8em;
+  padding-bottom: .8em;
 }
 
 .guess-result > p,
@@ -51,8 +51,8 @@ form.hint {
   font-weight: bold;
   border: 3px solid #f1f1f1;
   display: inline-block;
+  min-width: 18em;
   width: 40%;
-  min-width: 350px;
-  padding: 20px;
+  padding: 1em;
   text-align: center;
 }
