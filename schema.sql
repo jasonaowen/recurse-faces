@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS batches (
   batch_id INTEGER PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL
+  short_name TEXT,
+  alt_name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS people (
