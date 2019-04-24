@@ -18,17 +18,6 @@ import logging
 import psycopg2
 import requests
 
-def fetch_data(token):
-    return (get_batches(token), get_people(token))
-
-def get_batches(token):
-    url = 'https://www.recurse.com/api/v1/batches'
-    headers = {'Authorization': f'Bearer {token}'}
-    r = requests.get(url, headers=headers)
-    if r.status_code != requests.codes.ok:
-        r.raise_for_status()
-    return r.json()
-
 def get_people(token):
     people = []
 
@@ -49,13 +38,12 @@ def get_people(token):
 
     return people
 
-def replace_data(database_url, batches, people):
+def replace_data(database_url, people):
     connection = psycopg2.connect(database_url)
     cursor = connection.cursor()
 
     delete_data(cursor)
-    insert_batches(cursor, batches)
-    insert_people(cursor, people)
+    insert_data(cursor, people)
 
     connection.commit()
     cursor.close()
@@ -66,25 +54,9 @@ def delete_data(cursor):
     cursor.execute('DELETE FROM people')
     cursor.execute('DELETE FROM batches')
 
-def insert_batches(cursor, batches):
-    for batch in batches:
-        logging.debug("Batch {}, \"{}\", {} - {}".format(
-            batch.get('id'),
-            batch.get('name'),
-            batch.get('start_date'),
-            batch.get('end_date')
-        ))
-        cursor.execute("INSERT INTO batches " +
-                       " (batch_id, name, start_date, end_date)" +
-                       " VALUES (%s, %s, %s, %s)",
-                       [batch.get('id'),
-                        batch.get('name'),
-                        batch.get('start_date'),
-                        batch.get('end_date')
-                       ]
-                      )
+def insert_data(cursor, people):
+    processed_batches = set()
 
-def insert_people(cursor, people):
     for person in people:
         logging.debug("Person #{}: {} {} {}; {}".format(
             person.get('id'),
@@ -105,9 +77,33 @@ def insert_people(cursor, people):
                        ]
                       )
         for stint in person['stints']:
-            logging.debug("  Stint: {}, batch {}, {} - {}".format(
+            batch_id = None
+            batch = stint.get('batch')
+
+            if (batch):
+                batch_id = batch.get('id')
+
+                if (batch_id not in processed_batches):
+                    logging.debug("  Batch {}, \"{}\", {} - {}".format(
+                        batch_id,
+                        batch.get('name'),
+                        batch.get('short_name'),
+                        batch.get('alt_name')
+                    ))
+                    cursor.execute("INSERT INTO batches " +
+                                   " (batch_id, name, short_name, alt_name)" +
+                                   " VALUES (%s, %s, %s, %s)",
+                                   [batch_id,
+                                    batch.get('name'),
+                                    batch.get('short_name'),
+                                    batch.get('alt_name')
+                                   ]
+                                  )
+                    processed_batches.add(batch_id)
+
+            logging.debug("  Stint: {}, Batch: {}, {} - {}".format(
                 stint.get('type'),
-                stint.get('batch_id'),
+                batch_id,
                 stint.get('start_date'),
                 stint.get('end_date')
             ))
@@ -116,18 +112,20 @@ def insert_people(cursor, people):
                            "  start_date, end_date)" +
                            " VALUES (%s, %s, %s, %s, %s)",
                            [person.get('id'),
-                            stint.get('batch_id'),
+                            batch_id,
                             stint.get('type'),
                             stint.get('start_date'),
                             stint.get('end_date')
                            ]
                           )
 
+    logging.info('Found %s batches', len(processed_batches))
+
 def main(database_url, token):
-    batches, people = fetch_data(token)
+    people = get_people(token)
     logging.info('Found %s people', len(people))
 
-    replace_data(database_url, batches, people)
+    replace_data(database_url, people)
 
 if __name__ == "__main__":
     import os

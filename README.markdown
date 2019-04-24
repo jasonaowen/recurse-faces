@@ -40,6 +40,36 @@ and looks up names and images in the database.
 Running the API locally requires populating the database
 and setting up the Python environment.
 
+#### Python Virtual Environment
+You'll first need to install the Python dependencies.
+First, set up a
+[virtual environment](https://docs.python.org/3/tutorial/venv.html):
+
+```sh
+$ python3 -m venv venv
+```
+
+or
+
+```sh
+$ python3 -m virtualenv --python=python3 venv
+```
+
+Then, activate the virtual environment
+and install the app's dependencies into it:
+
+```sh
+$ . venv/bin/activate
+(venv)$ pip install -r requirements.txt
+```
+
+To populate the database or start the Flask app,
+the scripts must be run in this virtual environment (venv). The virtual
+environment can be reactivated at any time with the command:
+```sh
+$ . venv/bin/activate
+```
+
 #### Database
 
 We use [PostgreSQL](https://www.postgresql.org/) as our database.
@@ -80,7 +110,8 @@ which you can create in the
 The personal access token will only be shown once,
 so copy it to a safe place.
 
-Run the script with your personal access token:
+Run the script in your [Python Virtual Environment](#Python Virtual Environment)
+with your personal access token:
 
 ```sh
 (venv)$ DATABASE_URL=postgres:///faces \
@@ -100,28 +131,6 @@ to connect over TCP/IP to the databases named `faces` and your username,
 respectively.
 
 #### Flask app
-
-You'll need to install the Python dependencies.
-First, set up a
-[virtual environment](https://docs.python.org/3/tutorial/venv.html):
-
-```sh
-$ python3 -m venv venv
-```
-
-or
-
-```sh
-$ python3 -m virtualenv --python=python3 venv
-```
-
-Then, activate the virtual environment
-and install the app's dependencies into it:
-
-```sh
-$ . venv/bin/activate
-(venv)$ pip install -r requirements.txt
-```
 
 The Flask app needs some configuration,
 which it takes through environment variables.
@@ -144,7 +153,7 @@ into the respective placeholders below.
 Otherwise, those can be set to placeholder values like `_`
 (but must still be present and nonempty).
 
-Start the Flask API by:
+Start the Flask API in your [Python Virtual Environment](#Python Virtual Environment) by:
 
 ```sh
 (venv)$ FLASK_APP=faces.py \
