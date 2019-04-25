@@ -112,10 +112,28 @@ def get_random_person_from_all_batches(cursor, current_user):
                              image_url
                       FROM people
                       WHERE person_id != %s
+                        AND NOT image_url LIKE '%%no_photo_%%'
                       ORDER BY random()
-                      LIMIT 4""",
+                      LIMIT 1""",
                    [current_user])
-    return [x for x in cursor.fetchall()]
+
+    person = cursor.fetchall()
+
+    cursor.execute("""SELECT person_id,
+                             first_name,
+                             middle_name,
+                             last_name,
+                             image_url
+                      FROM people
+                      WHERE person_id != %s
+                        AND person_id != %s
+                      ORDER BY random()
+                      LIMIT 3""",
+                   [current_user, person[0][0]])
+
+    hints = cursor.fetchall()
+
+    return person + hints
 
 def get_random_overlapping(cursor, current_user):
     """Find a random person from the database that was at RC at the same time as
@@ -127,10 +145,28 @@ def get_random_overlapping(cursor, current_user):
                              image_url
                       FROM batch_mates
                       WHERE querent_person_id = %s
+                        AND NOT image_url LIKE '%%no_photo_%%'
                       ORDER BY random()
-                      LIMIT 4""",
+                      LIMIT 1""",
                    [current_user])
-    return [x for x in cursor.fetchall()]
+
+    person = cursor.fetchall()
+
+    cursor.execute("""SELECT person_id,
+                             first_name,
+                             middle_name,
+                             last_name,
+                             image_url
+                      FROM batch_mates
+                      WHERE querent_person_id = %s
+                        AND person_id != %s
+                      ORDER BY random()
+                      LIMIT 3""",
+                   [current_user, person[0][0]])
+
+    hints = cursor.fetchall()
+
+    return person + hints
 
 def get_random_in_batch(cursor, current_user):
     """Find a random person from the database that is in (one of) the current
@@ -151,10 +187,37 @@ def get_random_in_batch(cursor, current_user):
                         INNER JOIN user_batch
                           ON stints.batch_id = user_batch.batch_id
                       WHERE people.person_id != %s
+                        AND NOT image_url LIKE '%%no_photo_%%'
                       ORDER BY random()
-                      LIMIT 4""",
-                   [current_user,current_user])
-    return [x for x in cursor.fetchall()]
+                      LIMIT 1""",
+                   [current_user, current_user])
+
+    person = cursor.fetchall()
+
+    cursor.execute("""WITH user_batch AS (
+                        SELECT batch_id
+                        FROM stints
+                        WHERE person_id = %s
+                      )
+                      SELECT people.person_id,
+                             people.first_name,
+                             people.middle_name,
+                             people.last_name,
+                             people.image_url
+                      FROM people
+                        INNER JOIN stints
+                          ON people.person_id = stints.person_id
+                        INNER JOIN user_batch
+                          ON stints.batch_id = user_batch.batch_id
+                      WHERE people.person_id != %s
+                        AND people.person_id != %s
+                      ORDER BY random()
+                      LIMIT 3""",
+                   [current_user, current_user, person[0][0]])
+
+    hints = cursor.fetchall()
+
+    return person + hints
 
 @app.route('/api/people/random')
 @needs_authorization
