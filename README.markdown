@@ -33,7 +33,8 @@ $ REACT_APP_USE_TEST_DATA=true npm run start
 
 This option is the quickest way to get started, and it is helpful when doing front end development or testing that does not require updates to the database or calls to the RC API. Instead of displaying photos of Recursers, it will show
 photos and names of flowers:
-![Test Data Guess](./screenshots/test_data.png?raw=true "Correct Guess with Test Data")
+
+<img src="./screenshots/test_data.png?raw=true" alt="Test Data Guess" width="400"/>
 
 
 ### Back End with the RC API
@@ -179,7 +180,8 @@ the port number the Flask instance will be running on,
 which defaults to port 5000.
 
 Now, your local instance of Recurse Faces with live data from the RC API will be available at http://127.0.0.1:5000/:
-![Live RC Data Hint](./screenshots/live_rc_data.png?raw=true "Hint with Data From the RC API")
+
+<img src="./screenshots/live_rc_data.png?raw=true" alt="Live RC Data Hint" width="400"/>
 
 However, because this instance is running with statically generated resources from `npm build`, local changes to the React front end will not be reflected at this URL.
 
