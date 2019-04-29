@@ -43,7 +43,9 @@ def replace_data(database_url, people):
     cursor = connection.cursor()
 
     delete_data(cursor)
+    logging.info('Deleted existing tables')
     insert_data(cursor, people)
+    logging.info('Completed database update')
 
     connection.commit()
     cursor.close()
@@ -120,9 +122,11 @@ def insert_data(cursor, people):
                            ]
                           )
 
-    logging.info('Found %s batches', len(processed_batches))
+    logging.info('Inserted %s people', len(people))
+    logging.info('Inserted %s batches', len(processed_batches))
 
 def main(database_url, token):
+    logging.info('Starting Faces database update...')
     people = get_people(token)
     logging.info('Found %s people', len(people))
 
