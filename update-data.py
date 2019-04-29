@@ -109,13 +109,14 @@ def insert_data(cursor, people):
             ))
             cursor.execute("INSERT INTO stints" +
                            " (person_id, batch_id, stint_type," +
-                           "  start_date, end_date)" +
-                           " VALUES (%s, %s, %s, %s, %s)",
+                           "  start_date, end_date, title)" +
+                           " VALUES (%s, %s, %s, %s, %s, %s)",
                            [person.get('id'),
                             batch_id,
                             stint.get('type'),
                             stint.get('start_date'),
-                            stint.get('end_date')
+                            stint.get('end_date'),
+                            stint.get('title'),
                            ]
                           )
 

@@ -156,6 +156,23 @@ def get_random_in_batch(cursor, current_user):
                    [current_user,current_user])
     return [x for x in cursor.fetchall()]
 
+def get_stints_for_user(cursor, user):
+    """Returns the stint type, name, and duration for each stint in which the current
+    user participated."""
+    cursor.execute("""SELECT
+                        stints.stint_type,
+                        stints.start_date,
+                        stints.end_date,
+                        stints.title,
+                        batches.short_name
+                      FROM stints
+                      LEFT JOIN batches
+                        ON stints.batch_id = batches.batch_id
+                      WHERE stints.person_id = %s
+                      ORDER BY stints.start_date""",
+                   [user])
+    return [x for x in cursor.fetchall()]
+
 @app.route('/api/people/random')
 @needs_authorization
 def get_random_person():
@@ -169,16 +186,19 @@ def get_random_person():
     cursor = connection.cursor()
     random_person_filter = request.args.get('filter')
     if random_person_filter is None or random_person_filter == 'all':
-        random_person = get_random_person_from_all_batches(cursor, current_user)
+        random_people = get_random_person_from_all_batches(cursor, current_user)
     elif random_person_filter == 'overlapping':
-        random_person = get_random_overlapping(cursor, current_user)
+        random_people = get_random_overlapping(cursor, current_user)
     elif random_person_filter == 'my_batch':
-        random_person = get_random_in_batch(cursor, current_user)
+        random_people = get_random_in_batch(cursor, current_user)
     else:
         return (jsonify({
             'message': 'Unrecognized filter',
             'filter': random_person_filter,
         }), 400)
+
+    target_user = random_people[0]
+    stints = get_stints_for_user(cursor, target_user[0])
     cursor.close()
 
     return jsonify(
@@ -188,5 +208,12 @@ def get_random_person():
         'middle_name': x[2],
         'last_name': x[3],
         'image_url': x[4],
-        } for x in random_person]
+        'stints': [{
+            'stint_type': s[0],
+            'start_date': s[1].isoformat(),
+            'end_date': s[2] and s[2].isoformat(),
+            'title': s[3],
+            'short_name': s[4]
+            } for s in stints] if i == 0 else [],
+        } for i, x in enumerate(random_people)]
     )

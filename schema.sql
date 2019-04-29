@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS stints (
   stint_type TEXT NOT NULL,
   start_date DATE NOT NULL,
   end_date DATE NULL,
+  title TEXT,
   PRIMARY KEY (person_id, start_date)
 );
 
