@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class Guess extends Component {
 
@@ -79,10 +80,13 @@ class Guess extends Component {
     let dates = this.dateRangeToString(stint.get('start_date'),
       stint.get('end_date'));
 
-    // Using non-breaking space char to keep stint together on a single line
-    stint_info = (type + dates).replace(/\s+/g, "\u00A0")
-
+    stint_info = this.noBreak(type) + this.noBreak(dates);
     return stint_info;
+  }
+
+  noBreak(string) {
+    // Use non-breaking space to keep stint info together on a single line
+    return string.replace(/\s+/g, "\u00A0");
   }
 
   dateRangeToString(start_date, end_date) {
@@ -105,9 +109,9 @@ class Guess extends Component {
   }
 
   dateToString(date) {
-    // Input format: "Day, DD Mon YYYY", e.g. "Tue, 23 Apr 2019 00:00:00 GMT"
-    // Output format: "Mon 'YY", e.g. "Apr '19"
-    return date.substring(8, 11) + " '" + date.substring(14, 16);
+    // Input: ISO-6801-formatted date string 'YYYY-MM-DD', e.g. '2014-04-08'
+    // Output: "MMM 'YY", e.g. "Apr '19"
+    return moment(date).format("MMM 'YY");
   }
 }
 

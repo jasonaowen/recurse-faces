@@ -210,8 +210,8 @@ def get_random_person():
         'image_url': x[4],
         'stints': [{
             'stint_type': s[0],
-            'start_date': s[1],
-            'end_date': s[2],
+            'start_date': s[1].isoformat(),
+            'end_date': s[2] and s[2].isoformat(),
             'title': s[3],
             'short_name': s[4]
             } for s in stints] if i == 0 else [],
