@@ -53,11 +53,9 @@ class Guess extends Component {
       return "";
     }
 
-    if (type === 'retreat') {
-      return stint.get('short_name');
-    }
-
     switch (type) {
+      case 'retreat':
+        return stint.get('short_name');
       case 'residency':
         type = 'Resident';
         break;
