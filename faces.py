@@ -24,11 +24,25 @@ from flask import Flask, jsonify, redirect, request, send_from_directory, sessio
 from authlib.flask.client import OAuth
 from werkzeug.exceptions import HTTPException
 import psycopg2
+import sys
+from dotenv import load_dotenv
 
+load_dotenv()
+
+def getEnvVar(var_name, fallback = ""):
+    value = os.getenv(var_name) or fallback
+    if not value:
+        logging.error(f"''{var_name}'' value not found.",
+            " Ensure a .env or .flaskenv file is present",
+            " with this environment variable set.")
+        sys.exit()
+
+    logging.info(var_name + ": " + value)
+    return value
 
 # pylint: disable=invalid-name
 app = Flask(__name__, static_url_path='/build')
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'development')
+app.secret_key = getEnvVar('FLASK_SECRET_KEY', 'development')
 
 logging.basicConfig(level=logging.INFO)
 
@@ -37,11 +51,11 @@ rc = OAuth(app).register(
     api_base_url='https://www.recurse.com/api/v1/',
     authorize_url='https://www.recurse.com/oauth/authorize',
     access_token_url='https://www.recurse.com/oauth/token',
-    client_id=os.environ['CLIENT_ID'],
-    client_secret=os.environ['CLIENT_SECRET'],
+    client_id=getEnvVar('CLIENT_ID'),
+    client_secret=getEnvVar('CLIENT_SECRET'),
 )
 
-connection = psycopg2.connect(os.environ['DATABASE_URL'])
+connection = psycopg2.connect(getEnvVar('DATABASE_URL'))
 
 @app.route('/')
 def index():
@@ -56,7 +70,7 @@ def static_file(path):
 @app.route('/auth/recurse')
 def auth_recurse_redirect():
     "Redirect to the Recurse Center OAuth2 endpoint"
-    callback = os.environ['CLIENT_CALLBACK']
+    callback = getEnvVar('CLIENT_CALLBACK')
     return rc.authorize_redirect(callback)
 
 @app.route('/auth/recurse/callback', methods=['GET', 'POST'])
@@ -243,7 +257,7 @@ def get_random_person():
     if app.debug:
         current_user = request.args.get('user')
         if current_user is None:
-            current_user = os.environ.get('DEFAULT_USER', 1)
+            current_user = getEnvVar('DEFAULT_USER', 1)
     else:
         current_user = session['recurse_user_id']
     cursor = connection.cursor()

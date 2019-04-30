@@ -17,6 +17,18 @@ import json
 import logging
 import psycopg2
 import requests
+import sys
+
+def getEnvVar(var_name, fallback = ""):
+    value = os.getenv(var_name) or fallback
+    if not value:
+        logging.error(f"''{var_name}'' value not found.",
+            " Ensure a .env or .flaskenv file is present",
+            " with this environment variable set.")
+        sys.exit()
+
+    logging.info(var_name + ": " + value)
+    return value
 
 def get_people(token):
     people = []
@@ -134,10 +146,13 @@ def main(database_url, token):
 
 if __name__ == "__main__":
     import os
+    from dotenv import load_dotenv
+
+    load_dotenv()
 
     logging.basicConfig(level=logging.INFO)
 
-    database_url = os.environ['DATABASE_URL']
-    token = os.environ['RC_API_ACCESS_TOKEN']
+    database_url = getEnvVar('DATABASE_URL')
+    token = getEnvVar('RC_API_ACCESS_TOKEN')
 
     main(database_url, token)

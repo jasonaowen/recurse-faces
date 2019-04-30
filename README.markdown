@@ -49,6 +49,15 @@ it will show photos and names of flowers:
 
 <img src="./screenshots/test_data.png?raw=true" alt="Test Data Guess" width="400"/>
 
+Alternatively, the `REACT_APP_USE_TEST_DATA` variable
+can be added to a `.env` file
+to avoid re-typing it each time the React app is started.
+[Create a `.env` file](#create-a-env-file),
+enable the variable `REACT_APP_USE_TEST_DATA=true`,
+and then starting the React app is as simple as:
+```sh
+$ npm run start
+```
 
 ### Start the Back End with the RC API
 The Python server is a Flask app
@@ -88,6 +97,23 @@ The virtual environment can be reactivated at any time with the command:
 $ . venv/bin/activate
 ```
 
+#### Create a .env File
+The Flask app needs some configuration,
+which it takes through environment variables.
+For convenience, this project uses a `.env` file
+to store these variables.
+
+First, copy the `env.template` file to a new file named `.env`:
+```sh
+$ cp env.template .env
+```
+
+The next few sections will describe
+how to set and add to this initial set of variables.
+
+**Note**: The `.env` file should not be placed under version control
+and is included in the `.gitignore` file.
+
 #### Populate the Database
 
 We use [PostgreSQL](https://www.postgresql.org/) as our database.
@@ -115,6 +141,15 @@ Then, create the schema:
 $ psql faces < schema.sql
 ```
 
+Add your database connection URL to the `.env` file:
+`DATABASE_URL=postgres:///faces/`
+
+**Note**: the `DATABASE_URL` can be any
+[libpq connection string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
+An alternate database URL you might try is
+`postgres://localhost/faces`
+to connect over TCP/IP to the database named `faces`.
+
 There is a script
 to get the data the application needs
 from the Recurse Center API
@@ -124,32 +159,20 @@ the script needs a personal access token,
 which you can create in the
 [Apps page in your RC Settings](https://www.recurse.com/settings/apps).
 The personal access token will only be shown once,
-so copy it to a safe place.
+so copy it to a safe place
+and add it to the `.env` file:
+`RC_API_ACCESS_TOKEN=<personal_access_token>`
 
-Run the script in your
-[Python Virtual Environment](#python-virtual-environment)
-with your personal access token:
+Run the script to populate the database
+in your [Python Virtual Environment](#python-virtual-environment):
 
 ```sh
-(venv)$ DATABASE_URL=postgres:///faces \
-  RC_API_ACCESS_TOKEN=<personal access token> \
-  ./update-data.py
+(venv)$ ./update-data.py
 ```
 
 It should print out how many people and batches were added.
 
-Note: the `DATABASE_URL` can be any
-[libpq connection string](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
-Alternate database URLs you might try are
-`postgres://localhost/faces`
-or
-`postgres://localhost/`,
-to connect over TCP/IP to the database named `faces`.
-
 #### Start the Flask App
-
-The Flask app needs some configuration,
-which it takes through environment variables.
 
 When running in development mode,
 the app does not require authentication,
@@ -161,36 +184,37 @@ and examining the number in the URL;
 for example, `2092` in
 `https://www.recurse.com/directory/2092-jason-owen`.
 
+Add your RC ID to your `.env` file:
+`DEFAULT_USER=<your_recurse_user_id>`
+
 If you are working on the RC OAuth integration,
 you will need to
 [create an OAuth app in your RC Settings](https://www.recurse.com/settings/apps).
-Put the generated client ID and the client secret
-into the respective placeholders below.
-Otherwise, those can be set to placeholder values like `_`
+Then, update the `.env`
+to include the generated client ID and the client secret:
+`CLIENT_ID=<your_client_id>` and `CLIENT_SECRET=<your_client_secret>`.
+Otherwise, those variables can remain set to the placeholder values `_`
 (but must still be present and non-empty).
 
-Then, build the static resources for the Flask app to serve:
+The `CLIENT_CALLBACK` URL variable must include
+the port number the Flask instance will be running on,
+which defaults to port 5000. Update this URL in your `.env` file
+if using a different port.
+
+If the `REACT_APP_USE_TEST_DATA` variable was added to your `.env`
+in the steps above, set its value to `false` so that the app will
+display data from the RC API.
+
+Build the static resources for the Flask app to serve:
 ```sh
 $ npm run build
 ```
 
-Next, start the Flask API in your
-[Python Virtual Environment](#python-virtual-environment):
-
+Next, start the Flask API
+in your [Python Virtual Environment](#python-virtual-environment):
 ```sh
-(venv)$ FLASK_APP=faces.py \
-  FLASK_ENV=development \
-  CLIENT_CALLBACK=http://127.0.0.1:5000/auth/recurse/callback \
-  CLIENT_ID=<your_client_id> \
-  CLIENT_SECRET=<your_client_secret> \
-  DATABASE_URL=postgres:///faces \
-  DEFAULT_USER=<your_recurse_user_id> \
-  python -m flask run
+(venv)$ flask run
 ```
-
-The `CLIENT_CALLBACK` URL must include
-the port number the Flask instance will be running on,
-which defaults to port 5000.
 
 Now, your local instance of Recurse Faces
 with live data from the RC API
@@ -200,7 +224,8 @@ will be available at http://127.0.0.1:5000/:
 
 However, because this instance is running
 with statically generated resources from `npm build`,
-local changes to the React front end will not be reflected at this URL.
+local changes to the React front end
+will not be reflected at this URL.
 
 The React dev server is configured to proxy the Flask API,
 so to run your local front end code
