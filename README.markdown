@@ -1,57 +1,51 @@
 # Recurse Faces
 
-Learn the faces of your fellow Recursers with the
-[Recurse Faces app](https://faces.recurse.com)!
+Learn the faces of your fellow Recursers
+with the [Recurse Faces app](https://faces.recurse.com)!
 
 This app helps users associate names and faces of
-members of the [Recurse Center](https://recurse.com)
-community, including batch mates and staff from
-both current and past stints.
+members of the [Recurse Center](https://recurse.com) community,
+including batch mates and staff from both current and past stints.
 
 It uses the
 [Recurse Center API](https://github.com/recursecenter/wiki/wiki/Recurse-Center-API)
 to cycle through a set of profile photos,
-prompting users to guess the first name of the
-person shown in the photo. Users can choose to
-see a set of hints if they are stuck, and they
-can filter to see profiles as
-broadly as all past and present members of the
-RC community or as narrowly as
-only the profiles from a specific batch they attended.
+prompting users to guess the first name of the person shown in the photo.
+Users can choose to see a set of hints if they are stuck,
+and they can filter to see profiles
+as broadly as all past and present members of the RC community
+or as narrowly as only the profiles from a specific batch they attended.
 
 ## Local Set Up
 
-The app is comprised of a Flask back-end and a
-React front-end. The instructions
-below detail how to set up the
+The app is comprised of a Flask back-end and a React front-end.
+The instructions below detail how to set up the
 [front end with test data](#start-the-front-end-with-test-data),
-which is the quickest way to get started and does not
-require setting up the backend database and server.
+which is the quickest way to get started
+and does not require setting up the backend database and server.
 To pull live data from the Recurse Center API,
-see the instructions for
-[setting up the backend](#start-the-back-end-with-the-rc-api).
+see the instructions for [setting up the backend](#start-the-back-end-with-the-rc-api).
 
 ### Start the Front End with Test Data
 
-First, install dependencies by running the
-[npm](https://www.npmjs.com/get-npm) command:
+First, install dependencies by running the [npm](https://www.npmjs.com/get-npm) command:
 
 ```sh
 $ npm install
 ```
 
-If you want to run the front end with test data, you may set the
-`REACT_APP_USE_TEST_DATA` variable:
+If you want to run the front end with test data,
+you may set the `REACT_APP_USE_TEST_DATA` variable:
 
 ```sh
 $ REACT_APP_USE_TEST_DATA=true npm run start
 ```
 
-This option is the quickest way to get started, and
-it is helpful when doing front end development or
-testing that does not require updates to the database
-or calls to the RC API. Instead of displaying photos of
-Recursers, it will show photos and names of flowers:
+This option is the quickest way to get started,
+and it is helpful when doing front end development or testing
+that does not require updates to the database or calls to the RC API.
+Instead of displaying photos of Recursers,
+it will show photos and names of flowers:
 
 <img src="./screenshots/test_data.png?raw=true" alt="Test Data Guess" width="400"/>
 
@@ -67,8 +61,7 @@ and setting up the Python environment.
 
 #### Python Virtual Environment
 You'll first need to install the Python dependencies.
-First, set up a
-[virtual environment](https://docs.python.org/3/tutorial/venv.html):
+First, set up a [virtual environment](https://docs.python.org/3/tutorial/venv.html):
 
 ```sh
 $ python3 -m venv venv
@@ -199,27 +192,29 @@ The `CLIENT_CALLBACK` URL must include
 the port number the Flask instance will be running on,
 which defaults to port 5000.
 
-Now, your local instance of Recurse Faces with
-live data from the RC API will be available at http://127.0.0.1:5000/:
+Now, your local instance of Recurse Faces
+with live data from the RC API
+will be available at http://127.0.0.1:5000/:
 
 <img src="./screenshots/live_rc_data.png?raw=true" alt="Live RC Data Hint" width="400"/>
 
-However, because this instance is running with
-statically generated resources from `npm build`,
+However, because this instance is running
+with statically generated resources from `npm build`,
 local changes to the React front end will not be reflected at this URL.
 
-The React dev server is configured to proxy the
-Flask API, so to run your local front end code
-with live data from the RC API, leave the Flask
-app running and start the React front end in another terminal window:
+The React dev server is configured to proxy the Flask API,
+so to run your local front end code
+with live data from the RC API,
+leave the Flask app running
+and start the React front end in another terminal window:
 ```sh
 $ npm run start
 ```
 
-Now, the React front end reflecting any local code
-changes will be running at http://localhost:3000/
-with data from the Flask back end API running at
-http://127.0.0.1:5000/.
+Now, the React front end reflecting any local code changes
+will be running at http://localhost:3000/
+with data from the Flask back end API
+running at http://127.0.0.1:5000/.
 
 ## Heroku Set Up
 
@@ -289,8 +284,7 @@ or
 /usr/bin/python: No module named flask
 ```
 
-reactivate your
-[Python virtual environment](#python-virtual-environment),
+reactivate your [Python virtual environment](#python-virtual-environment),
 and then try to run the previous command again.
 
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11325206/336ea5f4-9150-11e5-9e90-d86ad31993d8.png' height='20px'/></a>
