@@ -16,7 +16,11 @@ class Card extends Component {
     event.preventDefault();
     const guess = this._guess.value;
     this._guess.value = "";
-    this.props.guess(guess);
+    if(guess === '') {
+      this.handleHintClick(event);
+    } else {
+      this.props.guess(guess);
+    }
   }
 
   handleHintClick = (event) => {
