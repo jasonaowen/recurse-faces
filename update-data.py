@@ -16,6 +16,7 @@ import argparse
 import json
 import logging
 import psycopg2
+import re
 import requests
 import sys
 
@@ -72,11 +73,17 @@ def insert_data(cursor, people):
     processed_batches = set()
 
     for person in people:
+        first_name = person.get('first_name')
+        last_name = person.get('last_name')
+        name = person.get('name')
+
+        middle_name = re.sub(r"^%s\s*(.*)\s+%s" % (re.escape(first_name), re.escape(last_name)), "\\1", name)
+
         logging.debug("Person #{}: {} {} {}; {}".format(
             person.get('id'),
-            person.get('first_name'),
-            person.get('middle_name'),
-            person.get('last_name'),
+            first_name,
+            middle_name,
+            last_name,
             person.get('image')
         ))
         cursor.execute("INSERT INTO people" +
@@ -84,9 +91,9 @@ def insert_data(cursor, people):
                        "  last_name, image_url)" +
                        " VALUES (%s, %s, %s, %s, %s)",
                        [person.get('id'),
-                        person.get('first_name'),
-                        person.get('middle_name'),
-                        person.get('last_name'),
+                        first_name,
+                        middle_name,
+                        last_name,
                         person.get('image_path')
                        ]
                       )
