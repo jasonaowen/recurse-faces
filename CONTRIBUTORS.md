@@ -15,5 +15,6 @@ much better (listed alphabetically by first name):
 * [Gwendolyn Weston](https://gwendolyn.io/)
 * [Jaryn Colbert](https://github.com/jaryncolbert)
 * [Jason Owen](https://github.com/jasonaowen)
+* [John Paul Ashenfelter](https://github.com/johnpaulashenfelter)
 * [Sebastian Morr](https://github.com/blinry)
 * [Sumana Harihareswara](https://github.com/brainwane)
