@@ -135,3 +135,4 @@ pg_dump*.sql
 
 # Vim .sqp files
 *.swp
+*.env
