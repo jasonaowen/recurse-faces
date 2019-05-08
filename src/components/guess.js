@@ -9,6 +9,7 @@ class Guess extends Component {
     if (guess.get('status') === "correct") {
       let person = this.props.person;
       let firstName = person.getIn(['0','first_name']);
+      let middleName = person.getIn(['0','middle_name']);
       let lastName = person.getIn(['0','last_name']);
       let personId = person.getIn(['0','person_id']);
       let stints = person.getIn(['0','stints']);
@@ -22,11 +23,20 @@ class Guess extends Component {
         stint_info = "";
       }
 
+      let nameParts = [];
+      if (middleName.length > 0) {
+        nameParts = [firstName, middleName, lastName];
+      } else {
+        nameParts = [firstName, lastName];
+      }
+
+      let displayName = nameParts.join(" ");
+
       return (
           <div className="guess-result correct-guess">
             <p>Correct! Their Full Name
             is <a href={`https://www.recurse.com/directory/${personId}`}> <br/>
-            {firstName} {lastName}</a> {stint_info}
+            {displayName}</a> {stint_info}
             </p>
           </div>
       );
