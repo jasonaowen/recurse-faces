@@ -266,17 +266,18 @@ password for Flask to encrypt sessions with.
 
 ```sh
 $ heroku config:set \
-    CLIENT_CALLBACK=https://<your_url>/auth/recurse/callback
+    CLIENT_CALLBACK=https://<your_url>/auth/recurse/callback \
     CLIENT_ID=<your_client_id> \
     CLIENT_SECRET=<your_client_secret> \
     FLASK_SECRET_KEY=$(makepasswd --chars=64) \
-    FLASK_ENV=production
+    FLASK_ENV=production \
+    RC_API_ACCESS_TOKEN=<your_personal_access_token>
 ```
 
 You will also need to create a database:
 
 ```sh
-$ heroku create heroku-postgresql:hobby-dev
+$ heroku addons:create heroku-postgresql:hobby-dev
 ```
 
 and populate it:
@@ -290,6 +291,16 @@ And you'll probably want logs of some sort. I'm using Papertrail:
 ```sh
 $ heroku addons:create papertrail:choklad
 ```
+
+We can schedule data updates using the
+[Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler):
+
+```sh
+$ heroku addons:create scheduler:standard
+$ heroku addons:open scheduler
+```
+
+Create a new job that runs daily, and set the command to `./update-data.py`.
 
 Then, in theory, it should be a simple `git push heroku master`!
 
