@@ -5,6 +5,7 @@ import { CardContainer } from './components/card';
 import { HintContainer } from './components/hint';
 import { GuessContainer } from './components/guess';
 import { NextContainer } from './components/next';
+import { Footer } from './components/footer';
 import * as actionCreators from './action_creators';
 import { getRandomPerson } from './api';
 import { connect } from 'react-redux';
@@ -23,6 +24,7 @@ class App extends Component {
         <HintContainer />
         <GuessContainer />
         <NextContainer />
+        <Footer />
       </div>
     );
   }
