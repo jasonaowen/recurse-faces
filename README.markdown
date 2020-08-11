@@ -302,7 +302,7 @@ $ heroku addons:open scheduler
 
 Create a new job that runs daily, and set the command to `./update-data.py`.
 
-Then, in theory, it should be a simple `git push heroku master`!
+Then, in theory, it should be a simple `git push heroku main`!
 
 
 ## Troubleshooting
