@@ -5,7 +5,7 @@
   "author": "Jason Owen <jason.a.owen@gmail.com>",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "immutable": "^3.8.2",
     "jdu": "^1.0.0",
     "moment": "^2.24.0",
